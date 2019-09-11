@@ -1,0 +1,22 @@
+{
+"manifest_version": 2,
+"name": "Brbrbrbrbrbr",
+"version": "1",
+"permissions" : ["http://localhost/", "*://*/*","activeTab", "declarativeContent", "storage"],
+
+"icons": {
+"128": "128.png"
+},
+
+"content_scripts": [
+    {
+      "matches": [ "*://*/*" ],
+      "js": ["jquery.js", "content.js" ]
+
+    }
+  ],
+"browser_action": {
+    "default_title": "My Steam",
+    "default_popup": "popup.html"
+  }
+}

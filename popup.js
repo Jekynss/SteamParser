@@ -300,7 +300,8 @@ function containers_on_page(){
         success:function(data){
         arr = $(data).find('.market_listing_row_link');
         items=[].slice.call(arr);
-        items.forEach(function(element) {
+        items.forEach(function(element,index) {
+            console.log("Box price is "+$(data).find(".sale_price")[index].innerHTML);
             getBoxInfo(element.href);
         });
         },
@@ -321,16 +322,22 @@ function  getBoxInfo(href){
         success:function(data){
             values=[];
             console.log("start");
-            items=data.split("g_rgAssets")[1].split("[")[1].split("]")[0].split("}");
-            items.slice(0,7);
+            items=data.split("g_rgAssets")[1].split("[")[1].split("]")[0].split("}").slice(7);
+            items.pop();
             items.pop();
             items.pop();
             items.forEach(function(element){
-                jso=element.concat("}");
+                jso=element.slice(1).concat("}");
                 json=JSON.parse(jso);
-                values.push(json);
+                values.push(json.value);
             });
 
+            values.forEach(function(name){
+                getItemInfo(name);
+
+            });
+            console.log(values.length);
+            console.log(values);
             //var scriptContent = $($.parseHTML(data, document, true)).filter('script').text();
             //console.log(scriptContent);
             //g_rgAssets
@@ -347,7 +354,16 @@ function  getBoxInfo(href){
 
 function  getItemInfo(name){
     console.log(name)
-
+    $.ajax({
+        type:'GET',
+        url:"https://steamcommunity.com/market/search?q="+name.toString(),
+        cache:false,
+        success:function(data){
+            console.log(data);
+            price=$(data).find('.sale_price');
+            console.log(price);
+        }
+    });
 }
 function OtherSets() {
     $.ajax({
@@ -373,23 +389,6 @@ function OtherSets() {
                 }
             }
             console.log(jsn);
-        }
-    });
-}
-
-
-
-
-function quest() {
-    $.ajax({
-        type:'POST',
-        /* адрес php файла, обрабатывающего форму */
-        url:"https://mail.ru/",
-        data:{'login':'mymailbot2@mail.ru','password':'knopka22','saveauth':1,'token':'abab3e8d48aa48258dc115ad4ee6f55c','project':'e.mail.ru'},
-        cache:false,
-        success:function(data){
-            console.log(data);
-            $("#error").html(data);
         }
     });
 }

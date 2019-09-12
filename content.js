@@ -316,20 +316,3 @@ function OtherSets() {
         }
     });
 }
-
-
-
-
-function quest() {
-    $.ajax({
-        type:'POST',
-        /* адрес php файла, обрабатывающего форму */
-        url:"https://mail.ru/",
-        data:{'login':'mymailbot2@mail.ru','password':'knopka22','saveauth':1,'token':'abab3e8d48aa48258dc115ad4ee6f55c','project':'e.mail.ru'},
-        cache:false,
-        success:function(data){
-            console.log(data);
-            $("#error").html(data);
-        }
-    });
-}

@@ -245,6 +245,8 @@ var jsn=[
 var page_id=1;
 var SteamCards = document.getElementById('changeColor');
 var SteamBoxes = document.getElementsByClassName('red')[0];
+var TestBtn = document.getElementById('test');
+
 changeColor.onclick = function(element) {
     console.log("Click");
     for(var i=0;i<jsn.length;i++){
@@ -256,40 +258,13 @@ SteamBoxes.onclick = function(element) {
     console.log("Click");
     containers_on_page();
 };
-
-
-
-
-
-
-function GemCosts(idss,gems) {
-    var nam="24";
-    nam=idss.replace(" ",'+').replace(" ",'+').replace(" ",'+').replace(" ",'+').replace(" ",'+').replace(" ",'+').replace(" ",'+');
-    $.ajax({
-        type:'GET',
-        url:"https://steamcommunity.com/market/search?category_753_Game%5B%5D=any&category_753_item_class%5B%5D=tag_item_class_5&appid=753&q="+nam,
-        cache:false,
-        success:function(data){
-            var math=gems/66.6;
-
-            var link=$(data).find(".sale_price")[0].innerHTML;
-            var name=$(data).find(".market_listing_item_name")[0].innerHTML;
-            var pers=$(data).find(".market_listing_row_link")[0].getAttribute("href");
-
-            var res=parseInt(link.replace("p","").replace("ó","").replace("á","").replace(".","").replace(",","."))-math;
-
-            console.log(name+" : "+gems+" : "+link+" ñòîèò ñäåëàòü çà:"+math);
-            if(link!="0 póá.")
-                console.log(name+" : "+pers +"   ---"+ "âûãîäà: "+res);
-            else
-                console.log(name+" : "+pers + "   âûãîäà: ÏÐÎÂÅÐÈÒÜ!!!!!!");
-
-            $("#error").html(data);
-        }
-    });
-}
-
-
+TestBtn.onclick = function(element) {
+    console.log("Click");
+    //getItemInfo("MAG-7");
+    //getBoxInfo("https://steamcommunity.com/market/listings/730/Chroma%203%20Case");
+    getItemInfo("Dual Berettas | Äóõîâèêè");
+    console.log("Conole log Dual Berettas | Äóõîâèêè");
+};
 
 function containers_on_page(){
     page_id=1;
@@ -333,8 +308,8 @@ function  getBoxInfo(href){
             });
 
             values.forEach(function(name){
+                console.log("NoDecode"+name);
                 getItemInfo(name);
-
             });
             console.log(values.length);
             console.log(values);
@@ -353,18 +328,25 @@ function  getBoxInfo(href){
 }
 
 function  getItemInfo(name){
-    console.log(name)
+    console.log("Name"+name);
+    console.log("Decode"+utf8Decode(name).toString());
+    console.log("NoDecode"+name.toString());
+    requ="https://steamcommunity.com/market/search?q="+utf8Decode(name).toString();
+    //console.log("https://steamcommunity.com/market/search?q="+utf8Decode(name).toString());
     $.ajax({
         type:'GET',
-        url:"https://steamcommunity.com/market/search?q="+name.toString(),
+        url:encodeURI(requ),
         cache:false,
         success:function(data){
-            console.log(data);
+            //console.log(data);
+            console.log("URL="+requ);
+            console.log("URLDECODE="+encodeURI(requ)) ;
             price=$(data).find('.sale_price');
             console.log(price);
         }
     });
 }
+
 function OtherSets() {
     $.ajax({
         type:'GET',
@@ -389,6 +371,51 @@ function OtherSets() {
                 }
             }
             console.log(jsn);
+        }
+    });
+}
+
+function utf8Decode(utf8String) {
+    if (typeof utf8String != 'string') throw new TypeError('parameter ‘utf8String’ is not a string');
+    // note: decode 3-byte chars first as decoded 2-byte strings could appear to be 3-byte char!
+    const unicodeString = utf8String.replace(
+        /[\u00e0-\u00ef][\u0080-\u00bf][\u0080-\u00bf]/g,  // 3-byte chars
+        function(c) {  // (note parentheses for precedence)
+            var cc = ((c.charCodeAt(0)&0x0f)<<12) | ((c.charCodeAt(1)&0x3f)<<6) | ( c.charCodeAt(2)&0x3f);
+            return String.fromCharCode(cc); }
+    ).replace(
+        /[\u00c0-\u00df][\u0080-\u00bf]/g,                 // 2-byte chars
+        function(c) {  // (note parentheses for precedence)
+            var cc = (c.charCodeAt(0)&0x1f)<<6 | c.charCodeAt(1)&0x3f;
+            return String.fromCharCode(cc); }
+    );
+    return unicodeString;
+}
+
+
+function GemCosts(idss,gems) {
+    var nam="24";
+    nam=idss.replace(" ",'+').replace(" ",'+').replace(" ",'+').replace(" ",'+').replace(" ",'+').replace(" ",'+').replace(" ",'+');
+    $.ajax({
+        type:'GET',
+        url:"https://steamcommunity.com/market/search?category_753_Game%5B%5D=any&category_753_item_class%5B%5D=tag_item_class_5&appid=753&q="+nam,
+        cache:false,
+        success:function(data){
+            var math=gems/66.6;
+
+            var link=$(data).find(".sale_price")[0].innerHTML;
+            var name=$(data).find(".market_listing_item_name")[0].innerHTML;
+            var pers=$(data).find(".market_listing_row_link")[0].getAttribute("href");
+
+            var res=parseInt(link.replace("p","").replace("ó","").replace("á","").replace(".","").replace(",","."))-math;
+
+            console.log(name+" : "+gems+" : "+link+" ñòîèò ñäåëàòü çà:"+math);
+            if(link!="0 póá.")
+                console.log(name+" : "+pers +"   ---"+ "âûãîäà: "+res);
+            else
+                console.log(name+" : "+pers + "   âûãîäà: ÏÐÎÂÅÐÈÒÜ!!!!!!");
+
+            $("#error").html(data);
         }
     });
 }

@@ -256,18 +256,20 @@ changeColor.onclick = function(element) {
 };
 SteamBoxes.onclick = function(element) {
     console.log("Click");
+    //for(var i=1;i<29;i++){
+     //   containers_on_page();
+     //   page_id+=1;
+  //  }
     containers_on_page();
 };
 TestBtn.onclick = function(element) {
     console.log("Click");
-    //getItemInfo("MAG-7");
-    //getBoxInfo("https://steamcommunity.com/market/listings/730/Chroma%203%20Case");
-    getItemInfo("Dual Berettas | Духовики");
-    console.log("Conole log Dual Berettas | Духовики");
+    getBoxInfo("https://steamcommunity.com/market/listings/730/Berlin%202019%20Legends%20%28Holo-Foil%29");
+
 };
 
 function containers_on_page(){
-    page_id=1;
+    var page_id=2;
     $.ajax({
         type:'GET',
         url:"https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=any&category_730_Type%5B%5D=tag_CSGO_Type_WeaponCase&appid=730#p"+page_id.toString()+"_popular_desc",
@@ -276,19 +278,25 @@ function containers_on_page(){
         arr = $(data).find('.market_listing_row_link');
         items=[].slice.call(arr);
         items.forEach(function(element,index) {
-            console.log("Box price is "+$(data).find(".sale_price")[index].innerHTML);
-            getBoxInfo(element.href);
+            //console.log("Box price is "+$(data).find(".sale_price")[index].innerHTML);
+            //getBoxInfo(element.href,$(data).find(".sale_price")[index].innerHTML);
+            setTimeout(getBoxInfo,index*25000,element.href,$(data).find(".sale_price")[index].innerHTML);
         });
+
         },
         error: function (xhr, ajaxOptions, thrownError) {
             console.log(xhr.status);
             console.log(thrownError);
-        }
+        },
+        async: false
 
 });
 }
 
-function  getBoxInfo(href){
+function  getBoxInfo(href,BoxCost){
+    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     console.log("this is "+href);
     $.ajax({
         type:'GET',
@@ -307,10 +315,16 @@ function  getBoxInfo(href){
                 values.push(json.value);
             });
 
-            values.forEach(function(name){
-                console.log("NoDecode"+name);
-                getItemInfo(name);
-            });
+            //values.forEach(function(name){
+            //    console.log("NoDecode"+name);
+            //    getItemInfo(name);
+            //});
+            for(var i=0;i<values.length;i++){
+              console.log("NoDecode"+values[i]);
+              //getItemInfo(values[i]);
+              setTimeout(getItemInfo,i*1000,values[i],BoxCost);
+            }
+
             console.log(values.length);
             console.log(values);
             //var scriptContent = $($.parseHTML(data, document, true)).filter('script').text();
@@ -327,8 +341,7 @@ function  getBoxInfo(href){
 
 }
 
-function  getItemInfo(name){
-    console.log("Name"+name);
+function  getItemInfo(name,BoxCost){
     console.log("Decode"+utf8Decode(name).toString());
     console.log("NoDecode"+name.toString());
     requ="https://steamcommunity.com/market/search?q="+utf8Decode(name).toString();
@@ -339,10 +352,13 @@ function  getItemInfo(name){
         cache:false,
         success:function(data){
             //console.log(data);
-            console.log("URL="+requ);
-            console.log("URLDECODE="+encodeURI(requ)) ;
+            console.log("Box price is -----------------------"+BoxCost+"---------------------------------");
+            console.log("URLDECODE="+encodeURI("https://steamcommunity.com/market/search?q="+utf8Decode(name).toString())) ;
             price=$(data).find('.sale_price');
-            console.log(price);
+            one_price=$(data).find('.sale_price')[0];
+            //console.log(price);
+            console.log("price is --------"+one_price.innerHTML+"--------  || and Name is "+name);
+            console.log("-------------------------------------------------------");
         }
     });
 }

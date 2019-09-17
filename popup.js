@@ -256,23 +256,25 @@ changeColor.onclick = function(element) {
 };
 SteamBoxes.onclick = function(element) {
     console.log("Click");
-    //for(var i=1;i<29;i++){
-     //   containers_on_page();
-     //   page_id+=1;
-  //  }
-    containers_on_page();
-};
+    for(var i=1;i<29;i++) {
+        //   containers_on_page();
+        //   page_id+=1;
+        //  }
+        //containers_on_page();
+        setTimeout(containers_on_page, i * 250000);
+    }
+    };
 TestBtn.onclick = function(element) {
     console.log("Click");
     getBoxInfo("https://steamcommunity.com/market/listings/730/Berlin%202019%20Legends%20%28Holo-Foil%29");
 
 };
 
-function containers_on_page(){
-    var page_id=2;
+function containers_on_page(id){
+    var wpage_id=id;
     $.ajax({
         type:'GET',
-        url:"https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=any&category_730_Type%5B%5D=tag_CSGO_Type_WeaponCase&appid=730#p"+page_id.toString()+"_popular_desc",
+        url:"https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=any&category_730_Type%5B%5D=tag_CSGO_Type_WeaponCase&appid=730#p"+id+"_popular_desc",
         cache:false,
         success:function(data){
         arr = $(data).find('.market_listing_row_link');
